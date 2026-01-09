@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema di Gestione Utenti - Vulnerabilità</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .danger {
+            background: #dc3545;
+        }
+
+        .danger:hover {
+            background: #c82333;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+            min-height: 50px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        .vulnerability-tag {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema di Gestione Utenti</h1>
+        <div class="warning">
+            ⚠️ <strong>Attenzione:</strong> Questo codice contiene intenzionalmente vulnerabilità di sicurezza per test SonarQube
+        </div>
+
+        <!-- Sezione Login con SQL Injection -->
+        <div class="section">
+            <h2>Login Utente <span class="vulnerability-tag">SQL Injection</span></h2>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Inserisci username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Inserisci password">
+            </div>
+            <button onclick="login()">Login</button>
+            <button onclick="loginUnsafe()" class="danger">Login Unsafe (SQL Injection)</button>
+        </div>
+
+        <!-- Sezione XSS -->
+        <div class="section">
+            <h2>Messaggi Utente <span class="vulnerability-tag">XSS</span></h2>
+            <div class="form-group">
+                <label for="message">Messaggio:</label>
+                <textarea id="message" rows="3" placeholder="Scrivi un messaggio..."></textarea>
+            </div>
+            <button onclick="displayMessage()">Mostra Messaggio (XSS Vulnerabile)</button>
+            <button onclick="displayMessageSafe()">Mostra Messaggio Safe</button>
+        </div>
+
+        <!-- Sezione Eval -->
+        <div class="section">
+            <h2>Calcolatrice <span class="vulnerability-tag">Code Injection</span></h2>
+            <div class="form-group">
+                <label for="expression">Espressione matematica:</label>
+                <input type="text" id="expression" placeholder="Es: 2 + 2">
+            </div>
+            <button onclick="calculateUnsafe()">Calcola (eval - VULNERABILE)</button>
+            <button onclick="calculateSafe()">Calcola Safe</button>
+        </div>
+
+        <!-- Sezione localStorage -->
+        <div class="section">
+            <h2>Gestione Dati Sensibili <span class="vulnerability-tag">Sensitive Data</span></h2>
+            <div class="form-group">
+                <label for="creditCard">Numero Carta di Credito:</label>
+                <input type="text" id="creditCard" placeholder="1234-5678-9012-3456">
+            </div>
+            <div class="form-group">
+                <label for="ssn">Codice Fiscale:</label>
+                <input type="text" id="ssn" placeholder="RSSMRA80A01H501U">
+            </div>
+            <button onclick="saveSensitiveData()">Salva in localStorage (VULNERABILE)</button>
+            <button onclick="loadSensitiveData()">Carica Dati</button>
+        </div>
+
+        <!-- Sezione innerHTML -->
+        <div class="section">
+            <h2>Rendering HTML <span class="vulnerability-tag">DOM XSS</span></h2>
+            <div class="form-group">
+                <label for="htmlContent">Contenuto HTML:</label>
+                <textarea id="htmlContent" rows="3" placeholder="<h3>Titolo</h3>"></textarea>
+            </div>
+            <button onclick="renderHTML()">Render con innerHTML (VULNERABILE)</button>
+        </div>
+
+        <!-- Output -->
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Credenziali hardcoded - VULNERABILITÀ
+        const API_KEY = "sk_live_abcdef1234567890";
+        const SECRET_TOKEN = "my-secret-token-xyz";
+        const ADMIN_PASSWORD = "admin123";
+        const DB_PASSWORD = "MyDbP@ssw0rd!2024";
+
+        // Funzione di login con SQL Injection - VULNERABILITÀ
+        function loginUnsafe() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            
+            // SQL Injection vulnerability - duplicazione #1
+            var query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+            
+            document.getElementById('output').innerHTML = 
+                "Query SQL generata (VULNERABILE):\n" + query;
+            
+            // Simulazione autenticazione
+            if (password == ADMIN_PASSWORD) {
+                alert("Login riuscito!");
+            }
+        }
+
+        // Altra funzione con SQL Injection - DUPLICAZIONE
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            
+            // SQL Injection vulnerability - duplicazione #2
+            var query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+            
+            console.log(query);
+            document.getElementById('output').textContent = "Login in corso...";
+        }
+
+        // XSS Vulnerability - innerHTML senza sanitizzazione
+        function displayMessage() {
+            var message = document.getElementById('message').value;
+            
+            // XSS vulnerability - duplicazione #1
+            document.getElementById('output').innerHTML = "Messaggio: " + message;
+        }
+
+        // Versione sicura
+        function displayMessageSafe() {
+            var message = document.getElementById('message').value;
+            document.getElementById('output').textContent = "Messaggio: " + message;
+        }
+
+        // Uso di eval - VULNERABILITÀ CRITICA
+        function calculateUnsafe() {
+            var expr = document.getElementById('expression').value;
+            
+            // Code injection vulnerability - eval
+            try {
+                var result = eval(expr);
+                document.getElementById('output').innerHTML = "Risultato: " + result;
+            } catch(e) {
+                document.getElementById('output').innerHTML = "Errore: " + e.message;
+            }
+        }
+
+        // Versione sicura del calcolo
+        function calculateSafe() {
+            var expr = document.getElementById('expression').value;
+            // Validazione base (non perfetta ma più sicura di eval)
+            if (/^[0-9+\-*/().\s]+$/.test(expr)) {
+                try {
+                    var result = Function('"use strict"; return (' + expr + ')')();
+                    document.getElementById('output').textContent = "Risultato: " + result;
+                } catch(e) {
+                    document.getElementById('output').textContent = "Errore nel calcolo";
+                }
+            } else {
+                document.getElementById('output').textContent = "Espressione non valida";
+            }
+        }
+
+        // Salvataggio dati sensibili in localStorage - VULNERABILITÀ
+        function saveSensitiveData() {
+            var creditCard = document.getElementById('creditCard').value;
+            var ssn = document.getElementById('ssn').value;
+            
+            // Vulnerabilità: dati sensibili in localStorage senza crittografia
+            localStorage.setItem('creditCard', creditCard);
+            localStorage.setItem('ssn', ssn);
+            localStorage.setItem('apiKey', API_KEY);
+            localStorage.setItem('password', ADMIN_PASSWORD);
+            
+            document.getElementById('output').textContent = 
+                "Dati salvati in localStorage (NON SICURO!)";
+        }
+
+        // Caricamento dati sensibili
+        function loadSensitiveData() {
+            var creditCard = localStorage.getItem('creditCard');
+            var ssn = localStorage.getItem('ssn');
+            
+            // XSS vulnerability - duplicazione #2
+            document.getElementById('output').innerHTML = 
+                "Carta: " + creditCard + "<br>CF: " + ssn;
+        }
+
+        // Rendering HTML con innerHTML - VULNERABILITÀ
+        function renderHTML() {
+            var html = document.getElementById('htmlContent').value;
+            
+            // DOM XSS vulnerability
+            document.getElementById('output').innerHTML = html;
+        }
+
+        // Funzione con codice duplicato #1
+        function validateEmail(email) {
+            if (email == null || email == "") {
+                console.log("Email vuota");
+                return false;
+            }
+            if (email.indexOf('@') == -1) {
+                console.log("Email non valida");
+                return false;
+            }
+            if (email.indexOf('.') == -1) {
+                console.log("Email non valida");
+                return false;
+            }
+            return true;
+        }
+
+        // Funzione con codice duplicato #2 - DUPLICAZIONE
+        function validateUsername(username) {
+            if (username == null || username == "") {
+                console.log("Username vuoto");
+                return false;
+            }
+            if (username.indexOf('@') == -1) {
+                console.log("Username non valido");
+                return false;
+            }
+            if (username.indexOf('.') == -1) {
+                console.log("Username non valido");
+                return false;
+            }
+            return true;
+        }
+
+        // Weak random per token - VULNERABILITÀ
+        function generateToken() {
+            // Vulnerabilità: Math.random() non è crittograficamente sicuro
+            return Math.random().toString(36).substring(7);
+        }
+
+        // Altra funzione con weak random - DUPLICAZIONE
+        function generateSessionId() {
+            // Vulnerabilità: Math.random() duplicato
+            return Math.random().toString(36).substring(7);
+        }
+
+        // Cookie senza flag sicuri - VULNERABILITÀ
+        function setUserCookie(username) {
+            // Vulnerabilità: cookie senza HttpOnly e Secure
+            document.cookie = "username=" + username;
+            document.cookie = "session=" + generateToken();
+        }
+
+        // Query building con concatenazione - SQL Injection duplicato
+        function searchUser(searchTerm) {
+            // SQL Injection vulnerability - duplicazione #3
+            var query = "SELECT * FROM users WHERE name LIKE '%" + searchTerm + "%'";
+            console.log(query);
+            return query;
+        }
+
+        // Altra query vulnerabile - DUPLICAZIONE
+        function deleteUser(userId) {
+            // SQL Injection vulnerability - duplicazione #4
+            var query = "DELETE FROM users WHERE id = " + userId;
+            console.log(query);
+            return query;
+        }
+
+        // Event listener con inline event handler (code smell)
+        window.onload = function() {
+            // Codice inizializzazione
+            console.log("Applicazione caricata");
+            console.log("API Key:", API_KEY); // Logging di dati sensibili
+            console.log("Admin Password:", ADMIN_PASSWORD); // VULNERABILITÀ
+        };
+
+        // Funzione con troppa complessità ciclomatica
+        function complexValidation(user) {
+            if (user.name) {
+                if (user.email) {
+                    if (user.age > 18) {
+                        if (user.country == "IT") {
+                            if (user.verified) {
+                                if (user.premium) {
+                                    if (user.status == "active") {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Variabili globali non necessarie - CODE SMELL
+        var globalVar1 = "test";
+        var globalVar2 = "test2";
+        var unusedVar = "never used";
+
+        // Funzione mai utilizzata - DEAD CODE
+        function neverCalled() {
+            console.log("Questa funzione non viene mai chiamata");
+            var x = 10;
+            var y = 20;
+            return x + y;
+        }
+    </script>
+</body>
+</html>
